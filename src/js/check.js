@@ -13,7 +13,7 @@ function getMessage(a, b) {
     stringResult = "Переданное SVG-изображение содержит " + a + " объектов и " + b * 4 + " атрибутов";
   }
   // Если оба аргумента массивы
-  else if (Array.isArray(a) === true && Array.isArray(b) === true) {
+  else if (Array.isArray(a) && Array.isArray(b)) {
     var artifactsSquare = 0;
     for (var i = 0; i < a.length; i++) {
       artifactsSquare += a[i] * b[i];
@@ -21,7 +21,7 @@ function getMessage(a, b) {
     stringResult = "Общая площадь артефактов сжатия: " + artifactsSquare + " пикселей"
   }
   // Если первый аргумент массив
-  else if (Array.isArray(a) === true) {
+  else if (Array.isArray(a)) {
     var amountOfRedPoints = 0;
     for (var i = 0; i < a.length; i++) {
       amountOfRedPoints += a[i];
