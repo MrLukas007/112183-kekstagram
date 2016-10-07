@@ -3,7 +3,7 @@ function getMessage(a, b) {
   var stringResult = "";
   // Если первый аргумент, имеет тип boolean
   if (typeof a === "boolean") {
-    if (a == true) {
+    if (a) {
       stringResult = "Переданное GIF-изображение анимировано и содержит " + b + " кадров"
     } else {
       stringResult = "Переданное GIF-изображение не анимировано";
