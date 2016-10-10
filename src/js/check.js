@@ -1,5 +1,5 @@
 'use strict';
-function getMessage(a, b) {
+function getMessage(a, b) { // eslint-disable-line
   var stringResult = '';
   // Если первый аргумент, имеет тип boolean
   if (typeof a === 'boolean') {
