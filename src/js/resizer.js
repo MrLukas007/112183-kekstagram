@@ -119,17 +119,20 @@
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
 
-      // Делаем всю загруженную фотографию с чёрным слоем и прозрачностью 80%
+      // Выделяем всю загруженную фотографию с чёрным слоем и прозрачностью 80%
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      this._ctx.fillRect(-this._container.width, -this._container.height,
-        2 * this._container.width, 2 * this._container.height);
-      // Делаем полностью прозрачный фон выделенной области у фотографии
-      this._ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-      this._ctx.fillRect(
-        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth,
-        (-this._resizeConstraint.side / 2) - this._ctx.lineWidth,
-        this._resizeConstraint.side + this._ctx.lineWidth / 2,
-        this._resizeConstraint.side + this._ctx.lineWidth / 2);
+      this._ctx.beginPath();
+      this._ctx.moveTo(-this._container.width, -this._container.height);
+      this._ctx.lineTo(this._container.width, -this._container.height);
+      this._ctx.lineTo(this._container.width, this._container.height);
+      this._ctx.lineTo(-this._container.width, this._container.height);
+      // Выделяем область у фотографии
+      this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, (-this._resizeConstraint.side / 2 - this._ctx.lineWidth));
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
+      this._ctx.lineTo((-this._resizeConstraint.side / 2 - this._ctx.lineWidth), this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
+      this._ctx.closePath();
+      this._ctx.fill('evenodd');
       // Выводим размеры загруженной фоторафии
       this._ctx.fillStyle = 'white';
       this._ctx.textAlign = 'center';
