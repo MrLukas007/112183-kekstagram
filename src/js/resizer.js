@@ -90,8 +90,18 @@
 
       // Диаметр точки.
       var diametr = 6;
-      // Цвет точек.
-      this._ctx.fillStyle = '#ffe753';
+      // Цвет линий.
+      this._ctx.strokeStyle = '#ffe753';
+      // Толщина линий.
+      this._ctx.lineWidth = 3;
+      // Длинна линий.
+      var lineLength = 8;
+      // Множитель для окончания цикла с нечетными элементами массива.
+      var endKoef = 0;
+      // Множитель для приведения цикла к общему виду.
+      var coefficientM = 0;
+      // Расстояние между двумя линиями (используется для определения велечены шага цикла).
+      var distance = 2 * lineLength - this._ctx.lineWidth * 2 / 3;
       // Сохранение состояния канваса.
       this._ctx.save();
 
@@ -114,24 +124,35 @@
         (this._resizeConstraint.side / 2 - diametr),
         (-this._resizeConstraint.side / 2 - diametr / 2),
         (-this._resizeConstraint.side / 2 - diametr / 2),
-        (-this._resizeConstraint.side / 2 - diametr / 2),
-        (-this._resizeConstraint.side / 2 - diametr / 2),
+
+        (-this._resizeConstraint.side / 2 - diametr / 2 + lineLength),
+        (-this._resizeConstraint.side / 2 - diametr / 2 + lineLength),
         (this._resizeConstraint.side / 2 - diametr),
-        (-this._resizeConstraint.side / 2 - diametr / 2)];
-      // Рисуем точки по заданным координатам начала и конца из массива
-      for (var i = 0; i < 4; i++) {
-        this._ctx.beginPath();
-        for (var j = 0; j < this._resizeConstraint.side; j += 10) {
-          if (i === 0 || i === 2) {
-            this._ctx.arc(startsPointsArray[i] + j, startsPointsArray[i + 4], diametr / 2, 0, 2 * Math.PI, false);
+        (-this._resizeConstraint.side / 2 - diametr / 2 + lineLength)];
+      // Рисуем линии по заданным координатам начала и конца из массива
+      this._ctx.beginPath();
+      for (var j = 0; j < 4; j++) {
+        if (j % 2 !== 0) {
+          endKoef = -2 * lineLength;
+        } else {
+          endKoef = 0;
+        }
+        for (var i = 0; i < this._resizeConstraint.side - lineLength + endKoef; i += distance) {
+          if (j === 3) {
+            coefficientM = -2 * lineLength;
+          }
+          if (j % 2 === 0) {
+            this._ctx.moveTo(startsPointsArray[j] + i, startsPointsArray[j + 4]);
+            this._ctx.lineTo(startsPointsArray[j] + lineLength + i, startsPointsArray[j + 4] - lineLength);
+            this._ctx.lineTo(startsPointsArray[j] + 2 * lineLength + i, startsPointsArray[j + 4]);
           } else {
-            this._ctx.arc(startsPointsArray[i], startsPointsArray[i + 4] + j, diametr / 2, 0, 2 * Math.PI, false);
+            this._ctx.moveTo(startsPointsArray[j], startsPointsArray[j + 4] + i);
+            this._ctx.lineTo(startsPointsArray[j] - lineLength - coefficientM, startsPointsArray[j + 4] + i + lineLength);
+            this._ctx.lineTo(startsPointsArray[j], startsPointsArray[j + 4] + 2 * lineLength + i);
           }
         }
-        this._ctx.closePath();
-        this._ctx.fill();
       }
-
+      this._ctx.stroke();
       // Выделяем всю загруженную фотографию с чёрным слоем и прозрачностью 80%
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       this._ctx.beginPath();
