@@ -31,15 +31,15 @@
 
       // Размер меньшей стороны изображения.
       var side = Math.min(
-          this._container.width * INITIAL_SIDE_RATIO,
-          this._container.height * INITIAL_SIDE_RATIO);
+        this._container.width * INITIAL_SIDE_RATIO,
+        this._container.height * INITIAL_SIDE_RATIO);
 
       // Изначально предлагаемое кадрирование — часть по центру с размером в 3/4
       // от размера меньшей стороны.
       this._resizeConstraint = new Square(
-          this._container.width / 2 - side / 2,
-          this._container.height / 2 - side / 2,
-          side);
+        this._container.width / 2 - side / 2,
+        this._container.height / 2 - side / 2,
+        side);
 
       // Отрисовка изначального состояния канваса.
       this.setConstraint();
@@ -88,16 +88,10 @@
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
       // чего-либо с другой обводкой.
 
-      // Толщина линии.
-      this._ctx.lineWidth = 6;
-      // Цвет обводки.
-      this._ctx.strokeStyle = '#ffe753';
-      // Размер штрихов. Первый элемент массива задает длину штриха, второй
-      // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
-      // Смещение первого штриха от начала линии.
-      this._ctx.lineDashOffset = 7;
-
+      // Диаметр точки.
+      var diametr = 6;
+      // Цвет точек.
+      this._ctx.fillStyle = '#ffe753';
       // Сохранение состояния канваса.
       this._ctx.save();
 
@@ -113,11 +107,30 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-      this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      // Создаём массив с начальными координатами в X и Y для каждого угла прямоугольника
+      // Элементы в массиве стоят в такой последовательности [x0,...,x3,y0,...,y4]
+      var startsPointsArray = [(-this._resizeConstraint.side / 2 - diametr / 2),
+        (this._resizeConstraint.side / 2 - diametr),
+        (-this._resizeConstraint.side / 2 - diametr / 2),
+        (-this._resizeConstraint.side / 2 - diametr / 2),
+        (-this._resizeConstraint.side / 2 - diametr / 2),
+        (-this._resizeConstraint.side / 2 - diametr / 2),
+        (this._resizeConstraint.side / 2 - diametr),
+        (-this._resizeConstraint.side / 2 - diametr / 2)];
+      // Рисуем точки по заданным координатам начала и конца из массива
+      for (var i = 0; i < 4; i++) {
+        this._ctx.beginPath();
+        for (var j = 0; j < this._resizeConstraint.side; j += 10) {
+          if (i === 0 || i === 2) {
+            this._ctx.arc(startsPointsArray[i] + j, startsPointsArray[i + 4], diametr / 2, 0, 2 * Math.PI, false);
+          } else {
+            this._ctx.arc(startsPointsArray[i], startsPointsArray[i + 4] + j, diametr / 2, 0, 2 * Math.PI, false);
+          }
+        }
+        this._ctx.closePath();
+        this._ctx.fill();
+      }
 
       // Выделяем всю загруженную фотографию с чёрным слоем и прозрачностью 80%
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -127,18 +140,17 @@
       this._ctx.lineTo(this._container.width, this._container.height);
       this._ctx.lineTo(-this._container.width, this._container.height);
       // Выделяем область у фотографии
-      this._ctx.moveTo((-this._resizeConstraint.side / 2) - this._ctx.lineWidth, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth);
-      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, (-this._resizeConstraint.side / 2 - this._ctx.lineWidth));
-      this._ctx.lineTo(this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2, this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
-      this._ctx.lineTo((-this._resizeConstraint.side / 2 - this._ctx.lineWidth), this._resizeConstraint.side / 2 - this._ctx.lineWidth / 2);
+      this._ctx.moveTo((-this._resizeConstraint.side / 2) - diametr, (-this._resizeConstraint.side / 2) - diametr);
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - diametr / 2, (-this._resizeConstraint.side / 2 - diametr));
+      this._ctx.lineTo(this._resizeConstraint.side / 2 - diametr / 2, this._resizeConstraint.side / 2 - diametr / 2);
+      this._ctx.lineTo((-this._resizeConstraint.side / 2 - diametr), this._resizeConstraint.side / 2 - diametr / 2);
       this._ctx.closePath();
       this._ctx.fill('evenodd');
       // Выводим размеры загруженной фоторафии
       this._ctx.fillStyle = 'white';
       this._ctx.textAlign = 'center';
       this._ctx.fillText(this._image.naturalWidth + ' x ' + this._image.naturalHeight,
-        0, (-this._resizeConstraint.side / 2) - this._ctx.lineWidth * 2);
-
+        0, (-this._resizeConstraint.side / 2) - diametr * 2);
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
       // следующий кадр рисовался с привычной системой координат, где точка
@@ -180,8 +192,8 @@
      */
     updatePosition: function(x, y) {
       this.moveConstraint(
-          this._cursorPosition.x - x,
-          this._cursorPosition.y - y);
+        this._cursorPosition.x - x,
+        this._cursorPosition.y - y);
       this._cursorPosition = new Coordinate(x, y);
     },
 
@@ -241,9 +253,9 @@
      */
     moveConstraint: function(deltaX, deltaY, deltaSide) {
       this.setConstraint(
-          this._resizeConstraint.x + (deltaX || 0),
-          this._resizeConstraint.y + (deltaY || 0),
-          this._resizeConstraint.side + (deltaSide || 0));
+        this._resizeConstraint.x + (deltaX || 0),
+        this._resizeConstraint.y + (deltaY || 0),
+        this._resizeConstraint.side + (deltaSide || 0));
     },
 
     /**
@@ -302,8 +314,8 @@
       temporaryCanvas.width = this._resizeConstraint.side;
       temporaryCanvas.height = this._resizeConstraint.side;
       temporaryCtx.drawImage(this._image,
-          -this._resizeConstraint.x,
-          -this._resizeConstraint.y);
+        -this._resizeConstraint.x,
+        -this._resizeConstraint.y);
       imageToExport.src = temporaryCanvas.toDataURL('image/png');
 
       return imageToExport;
