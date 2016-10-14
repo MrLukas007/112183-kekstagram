@@ -89,11 +89,7 @@
    * Если значения валиды, то делаем кнопку активной, и наоборот
    */
   var disableSubmitForm = function() {
-    if (resizeFormIsValid()) {
-      defaultDisableValue.disabled = false;
-    } else {
-      defaultDisableValue.disabled = true;
-    }
+    defaultDisableValue.disabled = !resizeFormIsValid();
   };
   /**
    * Запускаем функцию дизактивации кнопки "Далее" после каждого изменения поля формы
