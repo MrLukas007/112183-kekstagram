@@ -71,22 +71,10 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-
   var resizeFormm = document.querySelector('#upload-resize');
   var defaultDisableValue = document.querySelector('#resize-fwd');
+  //После загрузки формы делаем кнопку "Далее" не активной, т.к. у нас еще не введены данные
   defaultDisableValue.disabled = true;
-
-  var disableSubmitForm = function() {
-    if (resizeFormIsValid()) {
-      return (defaultDisableValue.disabled = false);
-    } else {
-      return (defaultDisableValue.disabled = true);
-    }
-  };
-
-  resizeFormm.oninput = function() {
-    disableSubmitForm();
-  };
 
   var resizeFormIsValid = function() {
     var resizeX = document.querySelector('#resize-x');
@@ -96,6 +84,21 @@
     +resizeY.value + +resizeSize.value <= currentResizer._image.naturalHeight &&
     +resizeX.value >= 0 && +resizeY.value >= 0 && +resizeSize.value > 0);
   };
+
+  /**
+   * Если значения валиды, то делаем кнопку активной, и наоборот
+   */
+  var disableSubmitForm = function() {
+    if (resizeFormIsValid()) {
+      defaultDisableValue.disabled = false;
+    } else {
+      defaultDisableValue.disabled = true;
+    }
+  };
+  /**
+   * Запускаем функцию дизактивации кнопки "Далее" после каждого изменения поля формы
+   */
+  resizeFormm.oninput = disableSubmitForm;
 
   /**
    * Форма загрузки изображения.
