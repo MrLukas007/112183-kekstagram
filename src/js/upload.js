@@ -23,6 +23,11 @@
     CUSTOM: 2
   };
 
+  /** Создаем куки и получаем значение с нужным именем */
+  var cookies = require('browser-cookies');
+  var cookiesValue = cookies.get('upload-filter');
+  var cookiesValuePreview = cookies.get('upload-filter-preview');
+
   /**
    * Регулярное выражение, проверяющее тип загружаемого файла. Составляется
    * из ключей FileType.
@@ -213,7 +218,6 @@
    */
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
-
     if (resizeFormIsValid()) {
       var image = currentResizer.exportImage().src;
 
@@ -227,6 +231,10 @@
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
     }
+    // Делаем активным фильтр, который был активным при прошлом выборе
+    var elementFromCookie = document.getElementById(cookiesValue);
+    elementFromCookie.checked = true;
+    filterImage.className = cookiesValuePreview;
   };
 
   /**
@@ -245,6 +253,7 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
+
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
 
@@ -253,6 +262,27 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
+
+    // Вычисляем дату для куки
+    var now = new Date();
+    var birsdayGrase = new Date(now.getFullYear(), 11, 9);
+    var dateDifference;
+    if (now > birsdayGrase) {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear());
+    } else {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear() - 1);
+    }
+    dateDifference = Math.floor((now - birsdayGrase) / 1000 / 60 / 60 / 24);
+
+    // Добавляем в куки последний выбранный фильтр
+    var selectedFilterPreview;
+    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+      return item.checked;
+    })[0].value;
+    selectedFilterPreview = 'filter-image-preview ' + 'filter-' + selectedFilter;
+    cookies.set('upload-filter-preview', selectedFilterPreview, {expires: dateDifference});
+    selectedFilter = ('upload-filter-' + selectedFilter);
+    cookies.set('upload-filter', selectedFilter, {expires: dateDifference});
   };
 
   /**
@@ -275,13 +305,12 @@
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
-
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
-  };
 
+  };
   cleanupResizer();
   updateBackground();
 })();
