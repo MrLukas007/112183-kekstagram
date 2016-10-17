@@ -24,6 +24,11 @@
   };
 
   /**
+   * Записываем в переменную значение куки с имененм upload-filter
+   */
+  var cookiesValue = window.Cookies.get('upload-filter');
+
+  /**
    * Регулярное выражение, проверяющее тип загружаемого файла. Составляется
    * из ключей FileType.
    * @type {RegExp}
@@ -213,7 +218,6 @@
    */
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
-
     if (resizeFormIsValid()) {
       var image = currentResizer.exportImage().src;
 
@@ -226,6 +230,12 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+    }
+    // Делаем активным фильтр, который был активным при прошлом выборе
+    if (cookiesValue) {
+      var elementFromCookie = document.getElementById('upload-filter-' + cookiesValue);
+      elementFromCookie.checked = true;
+      filterImage.className = 'filter-image-preview filter-' + cookiesValue;
     }
   };
 
@@ -245,6 +255,7 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
+
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
 
@@ -271,17 +282,26 @@
         'marvin': 'filter-marvin'
       };
     }
-
+    // Вычисляем дату для куки
+    var now = new Date();
+    var birsdayGrase = new Date(now.getFullYear(), 11, 9);
+    var dateDifference;
+    if (now > birsdayGrase) {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear());
+    } else {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear() - 1);
+    }
+    dateDifference = Math.floor((now - birsdayGrase) / 1000 / 60 / 60 / 24);
+    // Добавляем в куки последний выбранный фильтр
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
-
+    window.Cookies.set('upload-filter', selectedFilter, {expires: dateDifference});
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   };
-
   cleanupResizer();
   updateBackground();
 })();
