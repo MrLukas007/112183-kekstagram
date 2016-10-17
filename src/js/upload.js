@@ -23,10 +23,10 @@
     CUSTOM: 2
   };
 
-  /** Создаем куки и получаем значение с нужным именем */
-  var cookies = require('browser-cookies');
-  var cookiesValue = cookies.get('upload-filter');
-  var cookiesValuePreview = cookies.get('upload-filter-preview');
+  /**
+   * Записываем в переменную значение куки с имененм upload-filter
+   */
+  var cookiesValue = window.Cookies.get('upload-filter');
 
   /**
    * Регулярное выражение, проверяющее тип загружаемого файла. Составляется
@@ -232,9 +232,11 @@
       filterForm.classList.remove('invisible');
     }
     // Делаем активным фильтр, который был активным при прошлом выборе
-    var elementFromCookie = document.getElementById(cookiesValue);
-    elementFromCookie.checked = true;
-    filterImage.className = cookiesValuePreview;
+    if (cookiesValue) {
+      var elementFromCookie = document.getElementById('upload-filter-' + cookiesValue);
+      elementFromCookie.checked = true;
+      filterImage.className = 'filter-image-preview filter-' + cookiesValue;
+    }
   };
 
   /**
@@ -262,27 +264,6 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-
-    // Вычисляем дату для куки
-    var now = new Date();
-    var birsdayGrase = new Date(now.getFullYear(), 11, 9);
-    var dateDifference;
-    if (now > birsdayGrase) {
-      birsdayGrase.setFullYear(birsdayGrase.getFullYear());
-    } else {
-      birsdayGrase.setFullYear(birsdayGrase.getFullYear() - 1);
-    }
-    dateDifference = Math.floor((now - birsdayGrase) / 1000 / 60 / 60 / 24);
-
-    // Добавляем в куки последний выбранный фильтр
-    var selectedFilterPreview;
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
-      return item.checked;
-    })[0].value;
-    selectedFilterPreview = 'filter-image-preview ' + 'filter-' + selectedFilter;
-    cookies.set('upload-filter-preview', selectedFilterPreview, {expires: dateDifference});
-    selectedFilter = ('upload-filter-' + selectedFilter);
-    cookies.set('upload-filter', selectedFilter, {expires: dateDifference});
   };
 
   /**
@@ -301,15 +282,25 @@
         'marvin': 'filter-marvin'
       };
     }
-
+    // Вычисляем дату для куки
+    var now = new Date();
+    var birsdayGrase = new Date(now.getFullYear(), 11, 9);
+    var dateDifference;
+    if (now > birsdayGrase) {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear());
+    } else {
+      birsdayGrase.setFullYear(birsdayGrase.getFullYear() - 1);
+    }
+    dateDifference = Math.floor((now - birsdayGrase) / 1000 / 60 / 60 / 24);
+    // Добавляем в куки последний выбранный фильтр
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
+    window.Cookies.set('upload-filter', selectedFilter, {expires: dateDifference});
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
-
   };
   cleanupResizer();
   updateBackground();
