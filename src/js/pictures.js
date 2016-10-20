@@ -108,9 +108,7 @@ var pictures = [{
 }];
 
 var filter = document.querySelector('.filters');
-if (!filter.classList.contains('hidden')) {
-  filter.classList.add('hidden');
-}
+filter.classList.add('hidden');
 
 var container = document.querySelector('.pictures');
 var template = document.querySelector('template');
@@ -122,18 +120,10 @@ var getImageElement = function(image) {
   imageElement.querySelector('.picture-likes').textContent = image.likes;
 
   var backgroundImage = new Image(182, 182);
-  if (image.preview) {
-    backgroundImage.src = image.preview;
-  } else {
-    backgroundImage.src = image.url;
-  }
+  backgroundImage.src = image.preview ? image.preview : image.url;
 
   backgroundImage.onload = function() {
-    if (image.preview) {
-      imageElement.querySelector('img').src = image.preview;
-    } else {
-      imageElement.querySelector('img').src = image.url;
-    }
+    imageElement.querySelector('img').src = image.preview ? image.preview : image.url;
   };
   backgroundImage.onerror = function() {
     imageElement.classList.add('picture-load-failure');
