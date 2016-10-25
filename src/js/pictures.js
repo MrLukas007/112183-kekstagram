@@ -1,7 +1,7 @@
 'use strict';
 var load = require('./load');
 var getImageElement = require('./picture');
-(module.exports = function () {
+(module.exports = function() {
   var filter = document.querySelector('.filters');
   filter.classList.add('hidden');
 
@@ -14,7 +14,7 @@ var getImageElement = require('./picture');
   };
   var url = 'http://localhost:1507/api/pictures?callback=createCallback';
   load(url, renderImages);
-}) ();
+})();
 
 
 

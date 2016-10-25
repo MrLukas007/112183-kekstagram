@@ -1,5 +1,5 @@
+'use strict';
 // Отрисовка одного элемента
-
 var getImageElement = function(image) {
   var template = document.querySelector('template');
   var templateContainer = 'content' in template ? template.content : template;
