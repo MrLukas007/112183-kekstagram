@@ -1,8 +1,9 @@
 // Отрисовка одного элемента
-var template = document.querySelector('template');
-var templateContainer = 'content' in template ? template.content : template;
+
 
 var getImageElement = function(image) {
+  var template = document.querySelector('template');
+  var templateContainer = 'content' in template ? template.content : template;
   var imageElement = templateContainer.querySelector('a').cloneNode(true);
 
   imageElement.querySelector('.picture-comments').textContent = image.comments;
