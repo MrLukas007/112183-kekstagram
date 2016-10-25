@@ -1,4 +1,4 @@
 'use strict';
-require('./picture');
 require('./pictures');
-require('./load');
+require('./resizer');
+require('./upload');

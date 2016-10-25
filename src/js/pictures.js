@@ -1,5 +1,6 @@
 'use strict';
-
+var load = require('./load');
+var getImageElement = require('./picture');
 (module.exports = function () {
   var filter = document.querySelector('.filters');
   filter.classList.add('hidden');
