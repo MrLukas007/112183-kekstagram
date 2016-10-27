@@ -5,7 +5,7 @@ var Gallery = new function() {
   this.elementImage = document.querySelector('.gallery-overlay-image');
   this.activePicture;
   this.pictures = [];
-  var self = this;
+  var that = this;
 };
 Gallery.prototype = {
   setPictures: function(pictures) {
@@ -14,14 +14,14 @@ Gallery.prototype = {
   show: function(number) {
     this.number = number;
     this.element.onclick = function() {
-      if (number = this.pictures[pictures.length - 1]) {
-        this.setActivePicture (this.pictures[0]);
+      if (number = this.pictures.length - 1) {
+        this.setActivePicture (0);
       } else {
         this.setActivePicture (number + 1);
       }
     };
-    self.closeGallery.onclick = hide();
-    self.elementImage.onclick = function() {
+    that.closeGallery.onclick = hide();
+    that.elementImage.onclick = function() {
 
     };
     this.element.classList.remove('invisible');
@@ -29,15 +29,15 @@ Gallery.prototype = {
   },
   hide: function() {
     this.element.classList.add('invisible');
-    self.element.onclick = null;
-    self.closeGallery.onclick = null;
-    self.elementImage.onclick = null;
+    that.element.onclick = null;
+    that.closeGallery.onclick = null;
+    that.elementImage.onclick = null;
   },
   setActivePicture: function(number) {
     this.activePicture = number;
-    self.element.querySelector('img').src = self.pictures[number].querySelector('img').src;
-    self.element.querySelector('.likes-count').textContent = self.pictures[number].querySelector('.picture-comments').textContent;
-    self.element.querySelector('.comments-count').textContent = self.pictures[number].querySelector('.picture-likes').textContent;
+    that.element.querySelector('img').src = that.pictures[number].querySelector('img').src;
+    that.element.querySelector('.likes-count').textContent = that.pictures[number].querySelector('.picture-comments').textContent;
+    that.element.querySelector('.comments-count').textContent = that.pictures[number].querySelector('.picture-likes').textContent;
   }
 };
 
