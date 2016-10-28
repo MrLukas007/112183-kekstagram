@@ -25,7 +25,7 @@ Gallery.prototype = {
 
     };
     this.element.classList.remove('invisible');
-    this.setActivePicture (number);
+    this.setActivePicture (this.number);
   },
   hide: function() {
     this.element.classList.add('invisible');
@@ -35,11 +35,10 @@ Gallery.prototype = {
   },
   setActivePicture: function(number) {
     this.activePicture = number;
-    that.element.querySelector('img').src = that.pictures[number].querySelector('img').src;
-    that.element.querySelector('.likes-count').textContent = that.pictures[number].querySelector('.picture-comments').textContent;
-    that.element.querySelector('.comments-count').textContent = that.pictures[number].querySelector('.picture-likes').textContent;
+    this.pictures[number].src = that.pictures[number].querySelector('img').src;
+    this.pictures[number].textContent = that.pictures[number].querySelector('.picture-comments').textContent;
+    this.pictures[number].textContent = that.pictures[number].querySelector('.picture-likes').textContent;
   }
 };
 
-var galleryEl = new Gallery;
-galleryEl.pictures = document.querySelectorAll('.pictures .picture');
+module.exports = new Gallery();
