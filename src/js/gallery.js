@@ -1,5 +1,5 @@
 'use strict';
-var Gallery = new function() {
+var Gallery = function() {
   this.element = document.querySelector('.gallery-overlay');
   this.closeGallery = document.querySelector('.gallery-overlay-close');
   this.elementImage = document.querySelector('.gallery-overlay-image');
@@ -14,13 +14,13 @@ Gallery.prototype = {
   show: function(number) {
     this.number = number;
     this.element.onclick = function() {
-      if (number = this.pictures.length - 1) {
+      if (number === this.pictures.length - 1) {
         this.setActivePicture (0);
       } else {
         this.setActivePicture (number + 1);
       }
     };
-    that.closeGallery.onclick = hide();
+    that.closeGallery.onclick = this.hide();
     that.elementImage.onclick = function() {
 
     };
