@@ -1,6 +1,8 @@
 'use strict';
 var load = require('./load');
 var getImageElement = require('./picture');
+var gallery = require('./gallery');
+
 (module.exports = function() {
   var filter = document.querySelector('.filters');
   filter.classList.add('hidden');
@@ -8,9 +10,10 @@ var getImageElement = require('./picture');
 //Отрисовка списка
   var container = document.querySelector('.pictures');
   var renderImages = function(images) {
-    images.forEach(function(image) {
-      container.appendChild(getImageElement(image));
+    images.forEach(function(image, counter) {
+      container.appendChild(getImageElement(image, counter));
     });
+    gallery.setPictures(images);
   };
   var url = 'http://localhost:1507/api/pictures?callback=createCallback';
   load(url, renderImages);

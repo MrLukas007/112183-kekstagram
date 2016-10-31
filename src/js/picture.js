@@ -1,6 +1,7 @@
 'use strict';
+var gallery = require('./gallery');
 // Отрисовка одного элемента
-var getImageElement = function(image) {
+var getImageElement = function(image, itemCounter) {
   var template = document.querySelector('template');
   var templateContainer = 'content' in template ? template.content : template;
   var imageElement = templateContainer.querySelector('a').cloneNode(true);
@@ -16,6 +17,10 @@ var getImageElement = function(image) {
   };
   backgroundImage.onerror = function() {
     imageElement.classList.add('picture-load-failure');
+  };
+  imageElement.onclick = function(event) {
+    gallery.show(itemCounter);
+    event.preventDefault();
   };
   return imageElement;
 };
