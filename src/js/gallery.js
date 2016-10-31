@@ -3,7 +3,7 @@ var Gallery = function() {
   this.element = document.querySelector('.gallery-overlay');
   this.closeGallery = document.querySelector('.gallery-overlay-close');
   this.elementImage = document.querySelector('.gallery-overlay-image');
-  // this.activePicture;
+  this.activePicture = 0;
   this.pictures = [];
 };
 Gallery.prototype = {
@@ -12,21 +12,16 @@ Gallery.prototype = {
   },
   show: function(number) {
     var that = this;
-    this.number = number;
     this.elementImage.onclick = function() {
-      if (number === that.pictures.length - 1) {
+      if (that.activePicture === that.pictures.length - 1) {
         that.setActivePicture(0);
-        number = 0;
-        number++;
       } else {
-        that.setActivePicture(number + 1);
-        number++;
+        that.setActivePicture(that.activePicture + 1);
       }
     };
     this.closeGallery.onclick = this.hide.bind(this);
-
     this.element.classList.remove('invisible');
-    this.setActivePicture(this.number);
+    this.setActivePicture(number);
   },
   hide: function() {
     this.element.classList.add('invisible');
@@ -35,7 +30,7 @@ Gallery.prototype = {
     this.elementImage.onclick = null;
   },
   setActivePicture: function(number) {
-    // this.activePicture = number;
+    this.activePicture = number;
     this.elementImage.src = this.pictures[number].preview ? this.pictures[number].preview : this.pictures[number].url;
     this.element.querySelector('.likes-count').textContent = this.pictures[number].likes;
     this.element.querySelector('.comments-count').textContent = this.pictures[number].comments;
