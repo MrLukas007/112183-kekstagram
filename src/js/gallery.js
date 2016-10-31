@@ -1,6 +1,5 @@
 'use strict';
 var Gallery = function() {
-  this.self = this;
   this.element = document.querySelector('.gallery-overlay');
   this.closeGallery = document.querySelector('.gallery-overlay-close');
   this.elementImage = document.querySelector('.gallery-overlay-image');
@@ -17,8 +16,11 @@ Gallery.prototype = {
     this.elementImage.onclick = function() {
       if (number === that.pictures.length - 1) {
         that.setActivePicture(0);
+        number = 0;
+        number++;
       } else {
         that.setActivePicture(number + 1);
+        number++;
       }
     };
     this.closeGallery.onclick = this.hide.bind(this);
