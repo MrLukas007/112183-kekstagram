@@ -21,7 +21,7 @@ var getImageElement = function(image, itemCounter) {
   imageElement.onclick = function(event) {
     gallery.show(itemCounter);
     event.preventDefault();
-  }
+  };
   return imageElement;
 };
 

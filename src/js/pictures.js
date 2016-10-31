@@ -15,7 +15,7 @@ var gallery = require('./gallery');
     });
     gallery.setPictures(images);
   };
-    var url = 'http://localhost:1507/api/pictures?callback=createCallback';
+  var url = 'http://localhost:1507/api/pictures?callback=createCallback';
   load(url, renderImages);
 })();
 

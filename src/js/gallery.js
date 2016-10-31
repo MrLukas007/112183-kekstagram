@@ -3,7 +3,7 @@ var Gallery = function() {
   this.element = document.querySelector('.gallery-overlay');
   this.closeGallery = document.querySelector('.gallery-overlay-close');
   this.elementImage = document.querySelector('.gallery-overlay-image');
-  this.activePicture;
+  // this.activePicture;
   this.pictures = [];
 };
 Gallery.prototype = {
@@ -35,7 +35,7 @@ Gallery.prototype = {
     this.elementImage.onclick = null;
   },
   setActivePicture: function(number) {
-    this.activePicture = number;
+    // this.activePicture = number;
     this.elementImage.src = this.pictures[number].preview ? this.pictures[number].preview : this.pictures[number].url;
     this.element.querySelector('.likes-count').textContent = this.pictures[number].likes;
     this.element.querySelector('.comments-count').textContent = this.pictures[number].comments;
