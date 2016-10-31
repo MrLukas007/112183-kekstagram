@@ -18,8 +18,9 @@ var getImageElement = function(image, itemCounter) {
   backgroundImage.onerror = function() {
     imageElement.classList.add('picture-load-failure');
   };
-  imageElement.onclick = function() {
+  imageElement.onclick = function(event) {
     gallery.show(itemCounter);
+    event.preventDefault();
   }
   return imageElement;
 };
