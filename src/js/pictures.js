@@ -14,7 +14,7 @@ var gallery = require('./gallery');
   var imageElement = templateContainer.querySelector('a').cloneNode(true);
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(new Picture(image, imageElement, counter));
+      container.appendChild(new Picture(image, counter, imageElement));
     });
     gallery.setPictures(images);
   };
