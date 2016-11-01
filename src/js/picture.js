@@ -26,14 +26,16 @@ var getImageElement = function(image) {
 var Picture = function(image, itemCounter) {
   var that = this;
   this.data = image;
-  // this.element = element;
-  this.func = getImageElement (this.data, itemCounter);
-  this.func;
+  this.element = getImageElement (this.data, itemCounter);
+  this.element;
 
-  this.func.onclick = function(event) {
+  this.element.onclick = function(event) {
     gallery.show(itemCounter);
     event.preventDefault();
   };
+  this.remove = function () {
+    this.element.onclick = null;
+  }
 };
 
 module.exports = Picture;

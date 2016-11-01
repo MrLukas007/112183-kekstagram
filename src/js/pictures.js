@@ -11,7 +11,7 @@ var gallery = require('./gallery');
   var container = document.querySelector('.pictures');
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(new Picture(image, counter).func);
+      container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
   };
