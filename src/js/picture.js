@@ -19,23 +19,18 @@ var getImageElement = function(image) {
     imageElement.classList.add('picture-load-failure');
   };
   return imageElement;
-}
-
-// module.exports = getImageElement;
+};
 
 var Picture = function(image, itemCounter) {
-  var that = this;
   this.data = image;
-  this.element = getImageElement (this.data, itemCounter);
-  this.element;
-
+  this.element = getImageElement(this.data, itemCounter);
   this.element.onclick = function(event) {
     gallery.show(itemCounter);
     event.preventDefault();
   };
-  this.remove = function () {
+  this.remove = function() {
     this.element.onclick = null;
-  }
+  };
 };
 
 module.exports = Picture;
