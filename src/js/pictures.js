@@ -1,6 +1,6 @@
 'use strict';
 var load = require('./load');
-var getImageElement = require('./picture');
+var Picture = require('./picture');
 var gallery = require('./gallery');
 
 (module.exports = function() {
@@ -11,7 +11,7 @@ var gallery = require('./gallery');
   var container = document.querySelector('.pictures');
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(getImageElement(image, counter));
+      container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
   };
