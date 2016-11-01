@@ -1,6 +1,6 @@
 'use strict';
 var load = require('./load');
-var getImageElement = require('./picture');
+var Picture = require('./picture');
 var gallery = require('./gallery');
 
 (module.exports = function() {
@@ -9,9 +9,12 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var container = document.querySelector('.pictures');
+  var template = document.querySelector('template');
+  var templateContainer = 'content' in template ? template.content : template;
+  var imageElement = templateContainer.querySelector('a').cloneNode(true);
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(getImageElement(image, counter));
+      container.appendChild(new Picture(image, imageElement, counter));
     });
     gallery.setPictures(images);
   };
