@@ -1,11 +1,7 @@
 'use strict';
 var gallery = require('./gallery');
 // Отрисовка одного элемента
-var getImageElement = function(image, itemCounter) {
-  var template = document.querySelector('template');
-  var templateContainer = 'content' in template ? template.content : template;
-  var imageElement = templateContainer.querySelector('a').cloneNode(true);
-
+var getImageElement = function(image, itemCounter, imageElement) {
   imageElement.querySelector('.picture-comments').textContent = image.comments;
   imageElement.querySelector('.picture-likes').textContent = image.likes;
 
@@ -18,10 +14,6 @@ var getImageElement = function(image, itemCounter) {
   backgroundImage.onerror = function() {
     imageElement.classList.add('picture-load-failure');
   };
-  imageElement.onclick = function(event) {
-    gallery.show(itemCounter);
-    event.preventDefault();
-  };
   return imageElement;
 }
 
@@ -31,8 +23,12 @@ var Picture = function(image, itemCounter, element) {
   var that = this;
   this.data = image;
   this.element = element;
-
-  getImageElement (this.data, itemCounter);
+  this.func = getImageElement (this.data, itemCounter, this.element);
+  
+  this.element.onclick = function(event) {
+    gallery.show(itemCounter);
+    event.preventDefault();
+  };
 };
 
 module.exports = Picture;
