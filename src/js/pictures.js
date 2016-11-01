@@ -9,12 +9,9 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var container = document.querySelector('.pictures');
-  var template = document.querySelector('template');
-  var templateContainer = 'content' in template ? template.content : template;
-  var imageElement = templateContainer.querySelector('a').cloneNode(true);
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(new Picture(image, counter, imageElement).func);
+      container.appendChild(new Picture(image, counter).func);
     });
     gallery.setPictures(images);
   };
