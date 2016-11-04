@@ -30,6 +30,8 @@ var Picture = function(image, itemCounter) {
   };
   this.remove = function() {
     this.element.onclick = null;
+    itemCounter = 0;
+    this.data = null;
   };
 };
 

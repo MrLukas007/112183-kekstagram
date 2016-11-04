@@ -1,12 +1,15 @@
 'use strict';
 // Тут грузим JSONP
-var load = function(url, callback) {
-  var script = document.createElement('script');
-  script.src = url;
-  document.body.appendChild(script);
-  window.createCallback = function(data) {
-    callback(data);
-  };
-};
+var PAGE_SIZE = 12;
+var load = function(url, callback, filter, from, to) {
+  var xhr = new XMLHttpRequest();
 
+  xhr.onload = function(evt) {
+    var loadedData = JSON.parse(evt.target.response);
+    callback(loadedData);
+  };
+
+  xhr.open('GET', url + '?filter=' + filter);
+  xhr.send();
+};
 module.exports = load;
