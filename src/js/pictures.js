@@ -4,29 +4,43 @@ var Picture = require('./picture');
 var gallery = require('./gallery');
 
 (module.exports = function() {
+  var PAGE_SIZE = 6;
+  var pageNumber = 0;
+  var URL = 'http://localhost:1507/api/pictures';
+  var THROTTLE_DELAY = 100;
+  var filterDefault = 'filter-popular';
   var filter = document.querySelector('.filters');
+  var container = document.querySelector('.pictures');
   filter.classList.add('hidden');
 
 //Отрисовка списка
-  var container = document.querySelector('.pictures');
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      new Picture(image, counter).remove();
       container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
     filter.classList.remove('hidden');
   };
-  var url = 'http://localhost:1507/api/pictures';
-  load(url, renderImages, 'filter-popular');
-
+//Удаление всех отрисованных элементов
+  var deleteAllElements = function() {
+    var arr = container.querySelectorAll('a');
+    arr.forEach(function(elem) {
+      container.removeChild(elem);
+    });
+  };
+//Применение фильтров
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
       if (evt.target.name == 'filter') {
-        load (url, renderImages, evt.target.id);
+        deleteAllElements();
+        load(URL, renderImages, evt.target.id);
       }
     });
-  }
-  setFiltersEnabled ();
+  };
+
+  load(URL, renderImages, filterDefault);
+  setFiltersEnabled();
+  
 })();
+
 
