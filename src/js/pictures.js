@@ -29,7 +29,7 @@ var gallery = require('./gallery');
 //Применение фильтров
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
-      if (evt.target.name == 'filter') {
+      if (evt.target.name === 'filter') {
         container.innerHTML = '';
         pageNumber = 0;
         renderProperties.filter = evt.target.id;
