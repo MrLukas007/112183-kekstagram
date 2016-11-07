@@ -36,7 +36,7 @@ var gallery = require('./gallery');
       pageNumber++;
     }
   };
-  
+
 //Применение фильтров
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
