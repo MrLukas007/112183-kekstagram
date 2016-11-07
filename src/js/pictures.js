@@ -6,9 +6,10 @@ var gallery = require('./gallery');
 (module.exports = function() {
   var PAGE_SIZE = 6;
   var pageNumber = 0;
+  var filtredArray = [];
   var renderProperties = {
     from: pageNumber * PAGE_SIZE,
-    get to() { return this.from + PAGE_SIZE;},
+    to: pageNumber * PAGE_SIZE + PAGE_SIZE,
     filter: 'filter-popular'
   };
   var URL = 'http://localhost:1507/api/pictures';
@@ -20,24 +21,26 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var renderImages = function(images) {
+    filtredArray = images;
     images.forEach(function(image, counter) {
       container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
     filter.classList.remove('hidden');
   };
-//Удаление всех отрисованных элементов
-//   var deleteAllElements = function() {
-//     var arr = container.querySelectorAll('a');
-//     arr.forEach(function(elem) {
-//       container.removeChild(elem);
-//     });
-//   };
+
+  var recursiveLoad = function() {
+    while(isBottomReached() &&
+    isNextPageAvailable(filtredArray, pageNumber, PAGE_SIZE)) {
+      load(URL, renderImages, renderProperties);
+      pageNumber++;
+    }
+  };
+  
 //Применение фильтров
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
       if (evt.target.name == 'filter') {
-        // deleteAllElements();
         container.innerHTML = '';
         pageNumber = 0;
         renderProperties.filter = evt.target.id;
@@ -46,51 +49,31 @@ var gallery = require('./gallery');
     });
   };
 
+  var isNextPageAvailable = function(images, page, pageSize) {
+    return page < Math.floor(images.length / pageSize);
+  };
+
+  var isBottomReached = function() {
+    var GAP = 100;
+    var footerElement = document.querySelector('footer');
+    var footerPosition = footerElement.getBoundingClientRect();
+    return footerPosition.top - window.innerHeight - GAP <= 0;
+  };
+
+  var setScrollEnabled = function() {
+    var lastCall = Date.now();
+
+    window.addEventListener('scroll', function(evt) {
+      if (Date.now() - lastCall >= THROTTLE_DELAY) {
+        recursiveLoad();
+        lastCall = Date.now();
+      }
+    });
+  };
+
   load(URL, renderImages, renderProperties);
   setFiltersEnabled();
-
-
-  //
-  // var isNextPageAvailable = function(images, page, pageSize) {
-  //   return page < Math.floor(images.length / pageSize);
-  // };
-
-  // var isBottomReached = function() {
-  //   var GAP = 100;
-  //   var footerElement = document.querySelector('footer');
-  //   var footerPosition = footerElement.getBoundingClientRect();
-  //   return footerPosition.top - window.innerHeight - GAP <= 0;
-  // };
-  //
-  // var renderNextPages = function(reset) {
-  //   if (reset) {
-  //     pageNumber = 0;
-  //     container.innerHTML = '';
-  //   }
-  //
-  //   while(isBottomReached()) {
-  //     pageNumber++;
-  //     load(URL, renderImages, renderProperties);
-  //   }
-  //   // &&
-  //   // isNextPageAvailable(images, pageNumber, PAGE_SIZE)) {
-  //   //   load(URL, renderImages, renderProperties);
-  //   //   pageNumber++;
-  //   // }
-  // };
-  //
-  //
-  // var setScrollEnabled = function() {
-  //   var lastCall = Date.now();
-  //
-  //   window.addEventListener('scroll', function(evt) {
-  //     if (Date.now() - lastCall >= THROTTLE_DELAY) {
-  //       renderNextPages();
-  //       lastCall = Date.now();
-  //     }
-  //   });
-  // };
-  // setScrollEnabled();
+  setScrollEnabled();
 })();
 
 
