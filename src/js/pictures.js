@@ -6,7 +6,7 @@ var gallery = require('./gallery');
 (module.exports = function() {
   var PAGE_SIZE = 6;
   var pageNumber = 0;
-  // var filtredArray = [];
+  var filtredArray = [];
   var renderProperties = {
     from: pageNumber * PAGE_SIZE,
     to: pageNumber * PAGE_SIZE + PAGE_SIZE,
@@ -37,15 +37,16 @@ var gallery = require('./gallery');
   };
 
   var recursiveLoad = function() {
-    load(URL, renderProperties, function(data) {
-      renderImages(data);
-      if (isBottomReached()) {
-        pageNumber++;
-        renderProperties.from = pageNumber * PAGE_SIZE;
-        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
-        recursiveLoad();
-      }
-    });
+      load(URL, renderProperties, function(data) {
+        filtredArray = data;
+        renderImages(data);
+        if (isBottomReached()) {
+          pageNumber++;
+          renderProperties.from = pageNumber * PAGE_SIZE;
+          renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
+          recursiveLoad();
+        }
+      });
   };
 
 //Применение фильтров
@@ -54,6 +55,8 @@ var gallery = require('./gallery');
       if (evt.target.name === 'filter') {
         container.innerHTML = '';
         pageNumber = 0;
+        renderProperties.from = pageNumber * PAGE_SIZE;
+        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
         renderProperties.filter = evt.target.id;
         recursiveLoad();
       }
@@ -65,7 +68,10 @@ var gallery = require('./gallery');
 
     window.addEventListener('scroll', function() {
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
-        recursiveLoad();
+        load(URL, renderProperties, renderImages);
+        pageNumber++;
+        renderProperties.from = pageNumber * PAGE_SIZE;
+        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
         lastCall = Date.now();
       }
     });
