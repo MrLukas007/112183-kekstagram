@@ -6,7 +6,7 @@ var gallery = require('./gallery');
 (module.exports = function() {
   var PAGE_SIZE = 6;
   var pageNumber = 0;
-  var filtredArray = [];
+  // var filtredArray = [];
   var renderProperties = {
     from: pageNumber * PAGE_SIZE,
     to: pageNumber * PAGE_SIZE + PAGE_SIZE,
@@ -21,16 +21,12 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var renderImages = function(images) {
-    filtredArray = images;
+    // filtredArray = images;
     images.forEach(function(image, counter) {
       container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
     filter.classList.remove('hidden');
-  };
-
-  var isNextPageAvailable = function(images, page, pageSize) {
-    return page < Math.floor(images.length / pageSize);
   };
 
   var isBottomReached = function() {
@@ -41,12 +37,13 @@ var gallery = require('./gallery');
   };
 
   var recursiveLoad = function() {
-    while (isBottomReached() &&
-    isNextPageAvailable(filtredArray, pageNumber, PAGE_SIZE)) {
-      load(URL, renderImages, renderProperties);
-      recursiveLoad();
-      pageNumber++;
-    }
+    load(URL, renderProperties, function(data) {
+      renderImages(data);
+      if (!isBottomReached() && pageNumber < Math.floor(data.length / PAGE_SIZE)) {
+        pageNumber++;
+        recursiveLoad();
+      }
+    });
   };
 
 //Применение фильтров
@@ -60,7 +57,7 @@ var gallery = require('./gallery');
       }
     });
   };
-  
+
   var setScrollEnabled = function() {
     var lastCall = Date.now();
 
