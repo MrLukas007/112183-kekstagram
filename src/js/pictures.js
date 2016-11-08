@@ -39,8 +39,10 @@ var gallery = require('./gallery');
   var recursiveLoad = function() {
     load(URL, renderProperties, function(data) {
       renderImages(data);
-      if (!isBottomReached() && pageNumber < Math.floor(data.length / PAGE_SIZE)) {
+      if (isBottomReached()) {
         pageNumber++;
+        renderProperties.from = pageNumber * PAGE_SIZE;
+        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
         recursiveLoad();
       }
     });
@@ -63,7 +65,7 @@ var gallery = require('./gallery');
 
     window.addEventListener('scroll', function() {
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
-        load(URL, renderImages, renderProperties);
+        recursiveLoad();
         lastCall = Date.now();
       }
     });
