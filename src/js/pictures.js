@@ -40,14 +40,14 @@ var gallery = require('./gallery');
   };
 
   var recursiveLoad = function() {
-      load(URL, renderProperties, function(data) {
-        renderImages(data);
-        if (isBottomReached()) {
-          pageNumber++;
-          setFilterProperties();
-          recursiveLoad();
-        }
-      });
+    load(URL, renderProperties, function(data) {
+      renderImages(data);
+      if (isBottomReached()) {
+        pageNumber++;
+        setFilterProperties();
+        recursiveLoad();
+      }
+    });
   };
 
 //Применение фильтров
