@@ -6,7 +6,6 @@ var gallery = require('./gallery');
 (module.exports = function() {
   var PAGE_SIZE = 6;
   var pageNumber = 0;
-  var filtredArray = [];
   var renderProperties = {
     from: pageNumber * PAGE_SIZE,
     to: pageNumber * PAGE_SIZE + PAGE_SIZE,
@@ -21,12 +20,16 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var renderImages = function(images) {
-    // filtredArray = images;
     images.forEach(function(image, counter) {
       container.appendChild(new Picture(image, counter).element);
     });
     gallery.setPictures(images);
     filter.classList.remove('hidden');
+  };
+
+  var setFilterProperties = function() {
+    renderProperties.from = pageNumber * PAGE_SIZE;
+    renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
   };
 
   var isBottomReached = function() {
@@ -38,12 +41,10 @@ var gallery = require('./gallery');
 
   var recursiveLoad = function() {
       load(URL, renderProperties, function(data) {
-        filtredArray = data;
         renderImages(data);
         if (isBottomReached()) {
           pageNumber++;
-          renderProperties.from = pageNumber * PAGE_SIZE;
-          renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
+          setFilterProperties();
           recursiveLoad();
         }
       });
@@ -55,8 +56,7 @@ var gallery = require('./gallery');
       if (evt.target.name === 'filter') {
         container.innerHTML = '';
         pageNumber = 0;
-        renderProperties.from = pageNumber * PAGE_SIZE;
-        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
+        setFilterProperties();
         renderProperties.filter = evt.target.id;
         recursiveLoad();
       }
@@ -70,8 +70,7 @@ var gallery = require('./gallery');
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
         load(URL, renderProperties, renderImages);
         pageNumber++;
-        renderProperties.from = pageNumber * PAGE_SIZE;
-        renderProperties.to = pageNumber * PAGE_SIZE + PAGE_SIZE;
+        setFilterProperties();
         lastCall = Date.now();
       }
     });
