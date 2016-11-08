@@ -30,7 +30,7 @@ var gallery = require('./gallery');
   };
 
   var recursiveLoad = function() {
-    while(isBottomReached() &&
+    while (isBottomReached() &&
     isNextPageAvailable(filtredArray, pageNumber, PAGE_SIZE)) {
       load(URL, renderImages, renderProperties);
       pageNumber++;
@@ -40,7 +40,7 @@ var gallery = require('./gallery');
 //Применение фильтров
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
-      if (evt.target.name == 'filter') {
+      if (evt.target.name === 'filter') {
         container.innerHTML = '';
         pageNumber = 0;
         renderProperties.filter = evt.target.id;
@@ -63,7 +63,7 @@ var gallery = require('./gallery');
   var setScrollEnabled = function() {
     var lastCall = Date.now();
 
-    window.addEventListener('scroll', function(evt) {
+    window.addEventListener('scroll', function() {
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
         recursiveLoad();
         lastCall = Date.now();
