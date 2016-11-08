@@ -29,26 +29,6 @@ var gallery = require('./gallery');
     filter.classList.remove('hidden');
   };
 
-  var recursiveLoad = function() {
-    while (isBottomReached() &&
-    isNextPageAvailable(filtredArray, pageNumber, PAGE_SIZE)) {
-      load(URL, renderImages, renderProperties);
-      pageNumber++;
-    }
-  };
-
-//Применение фильтров
-  var setFiltersEnabled = function() {
-    filter.addEventListener('change', function(evt) {
-      if (evt.target.name === 'filter') {
-        container.innerHTML = '';
-        pageNumber = 0;
-        renderProperties.filter = evt.target.id;
-        load(URL, renderImages, renderProperties);
-      }
-    });
-  };
-
   var isNextPageAvailable = function(images, page, pageSize) {
     return page < Math.floor(images.length / pageSize);
   };
@@ -60,20 +40,42 @@ var gallery = require('./gallery');
     return footerPosition.top - window.innerHeight - GAP <= 0;
   };
 
+  var recursiveLoad = function() {
+    while (isBottomReached() &&
+    isNextPageAvailable(filtredArray, pageNumber, PAGE_SIZE)) {
+      load(URL, renderImages, renderProperties);
+      recursiveLoad();
+      pageNumber++;
+    }
+  };
+
+//Применение фильтров
+  var setFiltersEnabled = function() {
+    filter.addEventListener('change', function(evt) {
+      if (evt.target.name === 'filter') {
+        container.innerHTML = '';
+        pageNumber = 0;
+        renderProperties.filter = evt.target.id;
+        recursiveLoad();
+      }
+    });
+  };
+  
   var setScrollEnabled = function() {
     var lastCall = Date.now();
 
     window.addEventListener('scroll', function() {
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
-        recursiveLoad();
+        load(URL, renderImages, renderProperties);
         lastCall = Date.now();
       }
     });
   };
 
-  load(URL, renderImages, renderProperties);
+  recursiveLoad();
   setFiltersEnabled();
   setScrollEnabled();
+
 })();
 
 
