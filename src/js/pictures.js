@@ -68,9 +68,9 @@ var gallery = require('./gallery');
 
     window.addEventListener('scroll', function() {
       if (Date.now() - lastCall >= THROTTLE_DELAY) {
-        load(URL, renderProperties, renderImages);
         pageNumber++;
         setFilterProperties();
+        load(URL, renderProperties, renderImages);
         lastCall = Date.now();
       }
     });
