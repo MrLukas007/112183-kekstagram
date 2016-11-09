@@ -8,7 +8,10 @@ var Gallery = function() {
 };
 Gallery.prototype = {
   setPictures: function(pictures) {
-    this.pictures = pictures;
+    this.pictures = this.pictures.concat(pictures);
+  },
+  clearPictures: function() {
+    this.pictures = [];
   },
   show: function(number) {
     var that = this;

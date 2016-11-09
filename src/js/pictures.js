@@ -54,6 +54,7 @@ var gallery = require('./gallery');
   var setFiltersEnabled = function() {
     filter.addEventListener('change', function(evt) {
       if (evt.target.name === 'filter') {
+        gallery.clearPictures();
         container.innerHTML = '';
         pageNumber = 0;
         setFilterProperties();
