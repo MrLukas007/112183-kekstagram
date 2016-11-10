@@ -81,10 +81,10 @@
   //После загрузки формы делаем кнопку "Далее" не активной, т.к. у нас еще не введены данные
   defaultDisableValue.disabled = true;
 
+  var resizeX = document.querySelector('#resize-x');
+  var resizeY = document.querySelector('#resize-y');
+  var resizeSize = document.querySelector('#resize-size');
   var resizeFormIsValid = function() {
-    var resizeX = document.querySelector('#resize-x');
-    var resizeY = document.querySelector('#resize-y');
-    var resizeSize = document.querySelector('#resize-size');
     return (+resizeX.value + +resizeSize.value <= currentResizer._image.naturalWidth &&
     +resizeY.value + +resizeSize.value <= currentResizer._image.naturalHeight &&
     +resizeX.value >= 0 && +resizeY.value >= 0 && +resizeSize.value > 0);
@@ -302,6 +302,25 @@
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   };
+
+
+  window.addEventListener('resizerchange', function() {
+    currentResizer.getConstraint();
+  });
+
+  resizeX.addEventListener('resizerchange', function() {
+    currentResizer.setConstraint(resizeX.value, 0, 0);
+    currentResizer.moveConstraint(resizeX.value, 0, 0);
+  });
+  resizeY.addEventListener('resizerchange', function() {
+    currentResizer.setConstraint(0, resizeY.value, 0);
+  });
+  resizeSize.addEventListener('resizerchange', function() {
+    currentResizer.setConstraint(0, 0, resizeSize.value);
+  });
+
+
+
   cleanupResizer();
   updateBackground();
 })();
