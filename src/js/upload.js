@@ -304,21 +304,22 @@
   };
 
 
-  window.addEventListener('resizerchange', function() {
-    currentResizer.getConstraint();
-  });
+  // window.addEventListener('resizerchange', function() {
+  //   currentResizer.getConstraint();
+  // });
 
-  resizeX.addEventListener('resizerchange', function() {
-    currentResizer.setConstraint(resizeX.value, 0, 0);
-    currentResizer.moveConstraint(resizeX.value, 0, 0);
+  resizeForm.addEventListener('change', function() {
+    currentResizer.setConstraint(resizeX.value, resizeY.value, resizeSize.value);
   });
-  resizeY.addEventListener('resizerchange', function() {
-    currentResizer.setConstraint(0, resizeY.value, 0);
-  });
-  resizeSize.addEventListener('resizerchange', function() {
-    currentResizer.setConstraint(0, 0, resizeSize.value);
-  });
-
+  // resizeX.addEventListener('change', function() {
+  //   currentResizer.setConstraint(resizeX.value,  currentResizer.getConstraint().y,  currentResizer.getConstraint().side);
+  // });
+  // resizeY.addEventListener('change', function() {
+  //   currentResizer.setConstraint(currentResizer.getConstraint().x, resizeY.value,  currentResizer.getConstraint().side);
+  // });
+  // resizeSize.addEventListener('change', function() {
+  //   currentResizer.setConstraint(currentResizer.getConstraint().x, currentResizer.getConstraint().y, resizeSize.value);
+  // });
 
 
   cleanupResizer();
