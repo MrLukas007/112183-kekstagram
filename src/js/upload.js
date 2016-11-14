@@ -78,13 +78,11 @@
    */
   var resizeFormm = document.querySelector('#upload-resize');
   var defaultDisableValue = document.querySelector('#resize-fwd');
-  //После загрузки формы делаем кнопку "Далее" не активной, т.к. у нас еще не введены данные
-  defaultDisableValue.disabled = true;
-
+  defaultDisableValue.disabled = false;
+  var resizeX = document.querySelector('#resize-x');
+  var resizeY = document.querySelector('#resize-y');
+  var resizeSize = document.querySelector('#resize-size');
   var resizeFormIsValid = function() {
-    var resizeX = document.querySelector('#resize-x');
-    var resizeY = document.querySelector('#resize-y');
-    var resizeSize = document.querySelector('#resize-size');
     return (+resizeX.value + +resizeSize.value <= currentResizer._image.naturalWidth &&
     +resizeY.value + +resizeSize.value <= currentResizer._image.naturalHeight &&
     +resizeX.value >= 0 && +resizeY.value >= 0 && +resizeSize.value > 0);
@@ -99,7 +97,9 @@
   /**
    * Запускаем функцию дизактивации кнопки "Далее" после каждого изменения поля формы
    */
-  resizeFormm.oninput = disableSubmitForm;
+  resizeFormm.addEventListener('input', function() {
+    disableSubmitForm();
+  });
 
   /**
    * Форма загрузки изображения.
@@ -165,7 +165,8 @@
    * и показывается форма кадрирования.
    * @param {Event} evt
    */
-  uploadForm.onchange = function(evt) {
+
+  uploadForm.addEventListener('change', function(evt) {
     var element = evt.target;
     if (element.id === 'upload-file') {
       // Проверка типа загружаемого файла, тип должен быть изображением
@@ -194,14 +195,15 @@
         showMessage(Action.ERROR);
       }
     }
-  };
+  });
 
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
    */
-  resizeForm.onreset = function(evt) {
+
+  resizeForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     cleanupResizer();
@@ -209,14 +211,14 @@
 
     resizeForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Обработка отправки формы кадрирования. Если форма валидна, экспортирует
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  resizeForm.onsubmit = function(evt) {
+  resizeForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
     if (resizeFormIsValid()) {
       var image = currentResizer.exportImage().src;
@@ -237,18 +239,18 @@
       elementFromCookie.checked = true;
       filterImage.className = 'filter-image-preview filter-' + cookiesValue;
     }
-  };
+  });
 
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
    */
-  filterForm.onreset = function(evt) {
+  filterForm.addEventListener('reset', function(evt) {
     evt.preventDefault();
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
-  };
+  });
 
   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
@@ -256,7 +258,7 @@
    * @param {Event} evt
    */
 
-  filterForm.onsubmit = function(evt) {
+  filterForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
 
     cleanupResizer();
@@ -264,13 +266,15 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
-  };
+  });
+
+
 
   /**
    * Обработчик изменения фильтра. Добавляет класс из filterMap соответствующий
    * выбранному значению в форме.
    */
-  filterForm.onchange = function() {
+  filterForm.addEventListener('change', function() {
     if (!filterMap) {
       // Ленивая инициализация. Объект не создается до тех пор, пока
       // не понадобится прочитать его в первый раз, а после этого запоминается
@@ -301,7 +305,19 @@
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
     // состояние или просто перезаписывать.
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
-  };
+  });
+
+
+  window.addEventListener('resizerchange', function() {
+    resizeX.value = currentResizer.getConstraint().x;
+    resizeY.value = currentResizer.getConstraint().y;
+    resizeSize.value = currentResizer.getConstraint().side;
+  });
+
+  resizeForm.addEventListener('change', function() {
+    currentResizer.setConstraint(+resizeX.value, +resizeY.value, +resizeSize.value);
+  });
+
   cleanupResizer();
   updateBackground();
 })();
