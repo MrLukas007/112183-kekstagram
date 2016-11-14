@@ -21,7 +21,7 @@ var gallery = require('./gallery');
 //Отрисовка списка
   var renderImages = function(images) {
     images.forEach(function(image, counter) {
-      container.appendChild(new Picture(image, counter).element);
+      container.appendChild(new Picture(image, counter + pageNumber * PAGE_SIZE).element);
     });
     gallery.setPictures(images);
     filter.classList.remove('hidden');
