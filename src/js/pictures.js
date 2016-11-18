@@ -73,7 +73,7 @@ var gallery = require('./gallery');
     var lastCall = Date.now();
 
     window.addEventListener('scroll', function() {
-      if (Date.now() - lastCall >= THROTTLE_DELAY && isMore) {
+      if (Date.now() - lastCall >= THROTTLE_DELAY && isMore && isBottomReached()) {
         pageNumber++;
         setFilterProperties();
         load(URL, renderProperties, renderImages);
