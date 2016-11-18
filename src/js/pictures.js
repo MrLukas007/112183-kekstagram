@@ -4,6 +4,7 @@ var Picture = require('./picture');
 var gallery = require('./gallery');
 
 (module.exports = function() {
+  var isMore = true;
   var PAGE_SIZE = 6;
   var pageNumber = 0;
   var renderProperties = {
@@ -20,6 +21,9 @@ var gallery = require('./gallery');
 
 //Отрисовка списка
   var renderImages = function(images) {
+    if (!images.length) {
+      isMore = false;
+    }
     images.forEach(function(image, counter) {
       container.appendChild(new Picture(image, counter + pageNumber * PAGE_SIZE).element);
     });
@@ -42,7 +46,7 @@ var gallery = require('./gallery');
   var recursiveLoad = function() {
     load(URL, renderProperties, function(data) {
       renderImages(data);
-      if (isBottomReached()) {
+      if (isBottomReached() && isMore) {
         pageNumber++;
         setFilterProperties();
         recursiveLoad();
@@ -56,6 +60,7 @@ var gallery = require('./gallery');
       if (evt.target.name === 'filter') {
         gallery.clearPictures();
         container.innerHTML = '';
+        isMore = true;
         pageNumber = 0;
         setFilterProperties();
         renderProperties.filter = evt.target.id;
@@ -68,7 +73,7 @@ var gallery = require('./gallery');
     var lastCall = Date.now();
 
     window.addEventListener('scroll', function() {
-      if (Date.now() - lastCall >= THROTTLE_DELAY) {
+      if (Date.now() - lastCall >= THROTTLE_DELAY && isMore) {
         pageNumber++;
         setFilterProperties();
         load(URL, renderProperties, renderImages);
